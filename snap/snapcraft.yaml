@@ -1,0 +1,32 @@
+name: dosbox-x
+version: stable
+version-script: git -C parts/dosbox-x/build rev-parse --short HEAD
+summary:  DOSBox-X fork of the DOSBox project 
+description: |
+  DOSBox-X is a x86 emulator with Tandy/Hercules/CGA/EGA/VGA/SVGA graphics
+  sound and DOS. It's been designed to run old DOS games under platforms that
+  don't support it.
+
+confinement: strict
+grade: stable
+
+apps:
+  dosbox-x:
+    command: dosbox-x
+    plugs: [network, network-bind, unity7, opengl, home, pulseaudio]
+
+parts:
+  dosbox-x:
+    plugin: autotools
+    source-type: git
+    source: https://github.com/joncampbell123/dosbox-x.git
+    source-branch: master
+    build-packages:
+      - g++
+      - make
+      - libsdl1.2-dev
+      - libpng12-dev
+      - libsdl-net1.2-dev
+      - libsdl-sound1.2-dev
+      - libasound2-dev
+      - libxkbfile-dev
