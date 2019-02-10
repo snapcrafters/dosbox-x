@@ -13,7 +13,7 @@ grade: stable
 apps:
   dosbox-x:
     command: dosbox-x
-    plugs: [network, network-bind, unity7, opengl, home, pulseaudio]
+    plugs: [network, network-bind, unity7, opengl, home, pulseaudio, desktop, desktop-legacy, removable-media]
 
 parts:
   dosbox-x:
@@ -32,7 +32,9 @@ parts:
           git fetch
           git checkout "${last_committed_tag}"
         fi
-        snapcraftctl build
+        # ./build-debug-no-avcodec
+        ./build
+        cp src/dosbox-x $SNAPCRAFT_PART_INSTALL
     build-packages:
       - g++
       - make
@@ -42,3 +44,53 @@ parts:
       - libsdl-sound1.2-dev
       - libasound2-dev
       - libxkbfile-dev
+      - nasm
+      - libavcodec-dev
+      - libavformat-dev
+      - libavutil-dev
+      - libswscale-dev
+    stage-packages:
+      - libnuma1
+      - libogg0
+      - libopus0
+      - libsoxr0
+      - libtwolame0
+      - libxcb-dri2-0
+      - libxcb-dri3-0
+      - libxcb-glx0
+      - libxcb-present0
+      - libzvbi0
+      - libglu1-mesa
+      - libva1
+      - libasound2
+      - libcrystalhd3
+      - libfontconfig1
+      - libgme0
+      - libgsm1
+      - libmp3lame0
+      - liborc-0.4-0
+      - librtmp1
+      - libshine3
+      - libsnappy1v5
+      - libspeex1
+      - libssh-gcrypt-4
+      - libtheora0
+      - libvorbis0a
+      - libvorbisenc2
+      - libwavpack1
+      - libxkbfile1
+      - libxml2
+      - libxvidcore4
+      - libavcodec-ffmpeg56
+      - libavformat-ffmpeg56
+      - libavutil-ffmpeg54
+      - libbluray1
+      - libmodplug1
+      - libopenjpeg5
+      - libschroedinger-1.0-0
+      - libswresample-ffmpeg1
+      - libswscale-ffmpeg3
+      - libvpx3
+      - libwebp5
+      - libx264-148
+      - libx265-79
