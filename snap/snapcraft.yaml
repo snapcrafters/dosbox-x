@@ -7,6 +7,10 @@ description: |
   sound and DOS. It's been designed to run old DOS games under platforms that
   don't support it.
 
+architectures:
+  - build-on: i386
+  - build-on: amd64
+
 confinement: strict
 grade: stable
 
