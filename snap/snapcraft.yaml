@@ -1,7 +1,7 @@
 name: dosbox-x
-version: stable
-version-script: git -C parts/dosbox-x/build describe --tags | sed -e 's/dosbox-x-//' -e 's/wip-//' -e 's/windows-//' -e 's/v//'
+adopt-info: dosbox-x
 summary:  DOSBox-X fork of the DOSBox project
+base: core18
 description: |
   DOSBox-X is a x86 emulator with Tandy/Hercules/CGA/EGA/VGA/SVGA graphics
   sound and DOS. It's been designed to run old DOS games under platforms that
@@ -16,12 +16,13 @@ grade: stable
 
 apps:
   dosbox-x:
-    command: dosbox-x
+    command: desktop-launch $SNAP/dosbox-x
     plugs: [network, network-bind, unity7, opengl, home, pulseaudio, desktop, desktop-legacy, removable-media]
 
 parts:
   dosbox-x:
     plugin: autotools
+    after: [desktop-glib-only]
     source-type: git
     source: https://github.com/joncampbell123/dosbox-x.git
     override-build: |
@@ -39,11 +40,12 @@ parts:
         # ./build-debug-no-avcodec
         ./build
         cp src/dosbox-x $SNAPCRAFT_PART_INSTALL
+        snapcraftctl set-version $(git -C ../src describe --tags | sed -e 's/dosbox-x-//' -e 's/wip-//' -e 's/windows-//' -e 's/v//')
     build-packages:
       - g++
       - make
       - libsdl1.2-dev
-      - libpng12-dev
+      - libpng-dev
       - libsdl-net1.2-dev
       - libsdl-sound1.2-dev
       - libasound2-dev
@@ -65,10 +67,11 @@ parts:
       - libxcb-present0
       - libzvbi0
       - libglu1-mesa
-      - libva1
+      - libva2
       - libasound2
       - libcrystalhd3
       - libfontconfig1
+      - libpng16-16
       - libgme0
       - libgsm1
       - libmp3lame0
@@ -85,16 +88,24 @@ parts:
       - libxkbfile1
       - libxml2
       - libxvidcore4
-      - libavcodec-ffmpeg56
-      - libavformat-ffmpeg56
-      - libavutil-ffmpeg54
-      - libbluray1
+      - libavcodec57
+      - libavformat57
+      - libavutil55
+      - libbluray2
       - libmodplug1
-      - libopenjpeg5
-      - libschroedinger-1.0-0
-      - libswresample-ffmpeg1
-      - libswscale-ffmpeg3
-      - libvpx3
-      - libwebp5
-      - libx264-148
-      - libx265-79
+      - libjpeg62
+#      - libschroedinger-1.0-0
+      - libswresample2
+      - libswscale4
+      - libvpx5
+      - libwebp6
+      - libx264-152
+      - libx265-146
+  desktop-glib-only:
+    build-packages:
+      - libglib2.0-dev
+    plugin: make
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: glib-only
+    stage-packages:
+      - libglib2.0-bin
