@@ -17,6 +17,8 @@ grade: stable
 apps:
   dosbox-x:
     command: desktop-launch $SNAP/dosbox-x
+    environment: 
+      LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
     plugs: [network, network-bind, unity7, opengl, home, pulseaudio, desktop, desktop-legacy, removable-media]
 
 parts:
@@ -52,6 +54,7 @@ parts:
       - libxkbfile-dev
       - nasm
       - libavcodec-dev
+      - libpulse-dev
       - libavformat-dev
       - libavutil-dev
       - libswscale-dev
@@ -75,6 +78,7 @@ parts:
       - libgme0
       - libgsm1
       - libmp3lame0
+      - libpulse0
       - liborc-0.4-0
       - librtmp1
       - libshine3
