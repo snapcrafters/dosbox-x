@@ -24,7 +24,7 @@ apps:
 parts:
   dosbox-x:
     plugin: autotools
-    after: [desktop-glib-only]
+    after: [desktop-glib-only,ffmpeg]
     source-type: git
     source: https://github.com/joncampbell123/dosbox-x.git
     override-build: |
@@ -53,11 +53,7 @@ parts:
       - libasound2-dev
       - libxkbfile-dev
       - nasm
-      - libavcodec-dev
       - libpulse-dev
-      - libavformat-dev
-      - libavutil-dev
-      - libswscale-dev
     stage-packages:
       - libnuma1
       - libogg0
@@ -92,15 +88,10 @@ parts:
       - libxkbfile1
       - libxml2
       - libxvidcore4
-      - libavcodec57
-      - libavformat57
-      - libavutil55
       - libbluray2
       - libmodplug1
       - libjpeg62
 #      - libschroedinger-1.0-0
-      - libswresample2
-      - libswscale4
       - libvpx5
       - libwebp6
       - libx264-152
@@ -113,3 +104,172 @@ parts:
     source-subdir: glib-only
     stage-packages:
       - libglib2.0-bin
+  nv-codec-headers:
+    plugin: make
+    source: https://github.com/FFmpeg/nv-codec-headers/releases/download/n9.0.18.1/nv-codec-headers-9.0.18.1.tar.gz
+    override-build: |
+      make install PREFIX=/usr
+    build-packages:
+      - pkg-config
+
+  fdk-aac:
+    plugin: autotools
+    source: https://github.com/mstorsjo/fdk-aac/archive/v2.0.0.tar.gz
+    build-packages:
+      - g++
+    configflags:
+      - --prefix=/usr
+      - --disable-static
+    prime:
+      - usr/lib
+      - -usr/lib/pkgconfig
+
+  ffmpeg:
+    plugin: autotools
+    source: https://github.com/FFmpeg/FFmpeg.git
+    override-pull: |
+      snapcraftctl pull
+      last_committed_tag="$(git tag -l | grep -v v | sort -rV | head -n1)"
+      last_committed_tag_ver="$(echo ${last_committed_tag} | sed 's/n//')"
+      last_released_tag="$(snap info ffmpeg | awk '$1 == "beta:" { print $2 }')"
+      # If the latest tag from the upstream project has not been released to
+      # beta, build that tag instead of master.
+      if [ "${last_committed_tag_ver}" != "${last_released_tag}" ]; then
+        git fetch
+        git checkout "${last_committed_tag}"
+      fi
+      snapcraftctl set-version "$last_committed_tag_ver"
+    build-packages:
+      - libass-dev
+      - libbz2-dev
+      - libdrm-dev
+      - libgnutls28-dev
+      - liblzma-dev
+      - libmp3lame-dev
+      - libomxil-bellagio-dev
+      - libopenal-dev
+      - libopencore-amrnb-dev
+      - libopencore-amrwb-dev
+      - libopus-dev
+      - libpulse-dev
+      - libsctp-dev
+      - libsdl2-dev
+      - libspeex-dev
+      - libtheora-dev
+      - libtwolame-dev
+      - libva-dev
+      - libv4l-dev
+      - libvdpau-dev
+      - libvorbis-dev
+      - libvpx-dev
+      - libx264-dev
+      - libx265-dev
+      - libxcb-shape0-dev
+      - libxcb-shm0-dev
+      - libxcb-xfixes0-dev
+      - libxv-dev
+      - libxvidcore-dev
+      - ocl-icd-opencl-dev
+      - opencl-headers
+      - pkg-config
+      - yasm
+      - on amd64:
+        - libcrystalhd-dev
+      - on i386:
+        - libcrystalhd-dev
+    stage-packages:
+      - i965-va-driver
+      - libass9
+      - libdrm2
+      - libgnutls30
+      - libmp3lame0
+      - libopenal1
+      - libopencore-amrnb0
+      - libopencore-amrwb0
+      - libopus0
+      - libpulse0
+      - libsdl2-2.0-0
+      - libspeex1
+      - libtheora0
+      - libtwolame0
+      - libv4l-0
+      - libv4l2rds0
+      - libva-drm2
+      - libva-glx2
+      - libva-wayland2
+      - libvdpau-va-gl1
+      - libvorbis0a
+      - libvorbisenc2
+      - libvpx5
+      - libx264-152
+      - libx265-146
+      - libx11-6
+      - libxau6
+      - libxcb-shape0
+      - libxcb-shm0
+      - libxcb-xfixes0
+      - libxcb1
+      - libxdmcp6
+      - libxext6
+      - libxv1
+      - libxvidcore4
+      - mesa-va-drivers
+      - mesa-vdpau-drivers
+      - ocl-icd-libopencl1
+      - on amd64:
+        - libcrystalhd3
+      - on i386:
+        - libcrystalhd3
+    configflags:
+      - --prefix=/usr
+      - --disable-debug
+      - --disable-doc
+      - --disable-static
+      - --enable-avisynth
+      - --enable-cuda
+      - --enable-cuvid
+      - --enable-libdrm
+      - --enable-ffplay
+      - --enable-gnutls
+      - --enable-gpl
+      - --enable-libass
+      - --enable-libfdk-aac
+      - --enable-libfontconfig
+      - --enable-libfreetype
+      - --enable-libmp3lame
+      - --enable-libopencore_amrnb
+      - --enable-libopencore_amrwb
+      - --enable-libopus
+      - --enable-libpulse
+      - --enable-sdl2
+      - --enable-libspeex
+      - --enable-libtheora
+      - --enable-libtwolame
+      - --enable-libv4l2
+      - --enable-libvorbis
+      - --enable-libvpx
+      - --enable-libx264
+      - --enable-libx265
+      - --enable-libxcb
+      - --enable-libxvid
+      - --enable-nonfree
+      - --enable-nvenc
+      - --enable-omx
+      - --enable-openal
+      - --enable-opencl
+      - --enable-runtime-cpudetect
+      - --enable-shared
+      - --enable-vaapi
+      - --enable-vdpau
+      - --enable-version3
+      - --enable-xlib
+    after:
+      - nv-codec-headers
+      - fdk-aac
+    prime:
+      - usr/bin
+      - usr/lib
+      - -usr/lib/pkgconfig
+      - -usr/include
+      - -usr/share/doc
+      - -usr/share/man
