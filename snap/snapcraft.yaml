@@ -42,7 +42,7 @@ parts:
         # ./build-debug-no-avcodec
         ./build
         cp src/dosbox-x $SNAPCRAFT_PART_INSTALL
-        snapcraftctl set-version $(git -C ../src describe --tags | sed -e 's/dosbox-x-//' -e 's/wip-//' -e 's/windows-//' -e 's/v//')
+        snapcraftctl set-version $(head -n 1 CHANGELOG | awk -F ' ' '{print $1}')
     build-packages:
       - g++
       - make
