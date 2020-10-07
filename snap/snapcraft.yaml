@@ -19,7 +19,8 @@ apps:
     command: desktop-launch $SNAP/dosbox-x
     environment: 
       LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
-    plugs: [network, network-bind, unity7, opengl, home, pulseaudio, desktop, desktop-legacy, removable-media]
+      DISABLE_WAYLAND: 1
+    plugs: [network, network-bind, unity7, opengl, home, audio-playback, desktop, desktop-legacy, removable-media]
 
 parts:
   dosbox-x:
