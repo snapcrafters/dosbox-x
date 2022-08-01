@@ -40,7 +40,6 @@ parts:
           git fetch
           git checkout "${last_committed_tag}"
         fi
-        # ./build-debug-no-avcodec
         ./build
         cp src/dosbox-x $SNAPCRAFT_PART_INSTALL
         snapcraftctl set-version $(head -n 1 CHANGELOG | awk -F ' ' '{print $1}' | tr -d '\r')
@@ -55,6 +54,7 @@ parts:
       - libxkbfile-dev
       - nasm
       - libpulse-dev
+      - libncurses5-dev
     stage-packages:
       - libnuma1
       - libogg0
@@ -97,17 +97,20 @@ parts:
       - libwebp6
       - libx264-152
       - libx265-146
+
   desktop-glib-only:
-    build-packages:
-      - libglib2.0-dev
     plugin: make
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
     source-subdir: glib-only
+    build-packages:
+      - libglib2.0-dev
     stage-packages:
       - libglib2.0-bin
+
   nv-codec-headers:
     plugin: make
-    source: https://github.com/FFmpeg/nv-codec-headers/releases/download/n10.0.26.0/nv-codec-headers-10.0.26.0.tar.gz
+    source: https://github.com/FFmpeg/nv-codec-headers.git
+    source-branch: 'sdk/10.0'
     override-build: |
       make install PREFIX=/usr
     build-packages:
@@ -115,7 +118,7 @@ parts:
 
   fdk-aac:
     plugin: autotools
-    source: https://github.com/mstorsjo/fdk-aac/archive/v2.0.1.tar.gz
+    source: https://github.com/mstorsjo/fdk-aac/archive/v2.0.2.tar.gz
     build-packages:
       - g++
     configflags:
@@ -129,18 +132,10 @@ parts:
   ffmpeg:
     plugin: autotools
     source: https://github.com/FFmpeg/FFmpeg.git
-    override-pull: |
-      snapcraftctl pull
-      last_committed_tag="$(git tag -l | grep -v v | sort -rV | head -n1)"
-      last_committed_tag_ver="$(echo ${last_committed_tag} | sed 's/n//')"
-      last_released_tag="$(snap info ffmpeg | awk '$1 == "beta:" { print $2 }')"
-      # If the latest tag from the upstream project has not been released to
-      # beta, build that tag instead of master.
-      if [ "${last_committed_tag_ver}" != "${last_released_tag}" ]; then
-        git fetch
-        git checkout "${last_committed_tag}"
-      fi
-      snapcraftctl set-version "$last_committed_tag_ver"
+    source-branch: release/4.4
+    after:
+      - nv-codec-headers
+      - fdk-aac
     build-packages:
       - libass-dev
       - libbz2-dev
@@ -265,9 +260,6 @@ parts:
       - --enable-vdpau
       - --enable-version3
       - --enable-xlib
-    after:
-      - nv-codec-headers
-      - fdk-aac
     prime:
       - usr/bin
       - usr/lib
@@ -275,4 +267,3 @@ parts:
       - usr/include
       - -usr/share/doc
       - -usr/share/man
-
