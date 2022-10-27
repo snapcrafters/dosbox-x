@@ -20,6 +20,8 @@ assumes:
 layout:
   /usr/share/dosbox-x:
     bind: $SNAP/usr/share/dosbox-x
+  /usr/share/sounds:
+    bind: $SNAP/usr/share/sounds
 
 apps:
   dosbox-x:
@@ -73,6 +75,7 @@ parts:
       - libasound2-dev
       - libsdl2-dev
       - libsdl2-net-dev
+      - libfluidsynth-dev
       - libxkbfile-dev
       - nasm
       - libpulse-dev
@@ -92,6 +95,7 @@ parts:
       - libva2
       - libasound2
       - libcrystalhd3
+      - libfluidsynth1
       - libfontconfig1
       - libpng16-16
       - libgme0
