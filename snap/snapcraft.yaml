@@ -14,13 +14,31 @@ architectures:
 confinement: strict
 grade: stable
 
+assumes:
+  - snapd2.36 # layouts
+
+layout:
+  /usr/share/dosbox-x:
+    bind: $SNAP/usr/share/dosbox-x
+
 apps:
   dosbox-x:
-    command: desktop-launch $SNAP/dosbox-x
+    command: bin/desktop-launch $SNAP/usr/bin/dosbox-x
     environment: 
       LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
       DISABLE_WAYLAND: 1
-    plugs: [network, network-bind, unity7, opengl, home, audio-playback, desktop, desktop-legacy, removable-media]
+    plugs: 
+    - audio-playback
+    - desktop
+    - desktop-legacy
+    - home
+    - network
+    - network-bind
+    - opengl
+    - removable-media
+    - unity7
+    - wayland
+    - x11
 
 parts:
   dosbox-x:
@@ -28,6 +46,10 @@ parts:
     after: [desktop-glib-only,ffmpeg]
     source-type: git
     source: https://github.com/joncampbell123/dosbox-x.git
+    configflags:
+      - --prefix=/usr
+      - --enable-debug=heavy
+      - --enable-sdl2
     override-build: |
         # There is no pattern in the release tags for DosBox-X
         # This should resolve to a version or datestamp or both.
@@ -40,17 +62,17 @@ parts:
           git fetch
           git checkout "${last_committed_tag}"
         fi
-        ./build
-        cp src/dosbox-x $SNAPCRAFT_PART_INSTALL
+
+        snapcraftctl build
+
         snapcraftctl set-version $(head -n 1 CHANGELOG | awk -F ' ' '{print $1}' | tr -d '\r')
     build-packages:
       - g++
       - make
-      - libsdl1.2-dev
       - libpng-dev
-      - libsdl-net1.2-dev
-      - libsdl-sound1.2-dev
       - libasound2-dev
+      - libsdl2-dev
+      - libsdl2-net-dev
       - libxkbfile-dev
       - nasm
       - libpulse-dev
@@ -78,6 +100,8 @@ parts:
       - libpulse0
       - liborc-0.4-0
       - librtmp1
+      - libsdl2-2.0-0
+      - libsdl2-net-2.0-0
       - libshine3
       - libsnappy1v5
       - libspeex1
