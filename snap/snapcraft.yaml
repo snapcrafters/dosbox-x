@@ -1,11 +1,6 @@
 name: dosbox-x
 adopt-info: dosbox-x
-summary:  DOSBox-X fork of the DOSBox project
 base: core18
-description: |
-  DOSBox-X is a x86 emulator with Tandy/Hercules/CGA/EGA/VGA/SVGA graphics
-  sound and DOS. It's been designed to run old DOS games under platforms that
-  don't support it.
 
 architectures:
   - build-on: i386
@@ -26,6 +21,8 @@ layout:
 apps:
   dosbox-x:
     command: bin/desktop-launch $SNAP/usr/bin/dosbox-x
+    desktop: usr/share/applications/com.dosbox_x.DOSBox-X.desktop
+    common-id: com.dosbox_x.DOSBox-X
     environment: 
       LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
       DISABLE_WAYLAND: 1
@@ -46,6 +43,7 @@ parts:
   dosbox-x:
     plugin: autotools
     after: [desktop-glib-only,ffmpeg]
+    parse-info: [usr/share/metainfo/com.dosbox_x.DOSBox-X.metainfo.xml]
     source-type: git
     source: https://github.com/joncampbell123/dosbox-x.git
     configflags:
@@ -67,8 +65,12 @@ parts:
 
         snapcraftctl build
 
+        # never fail on the next line (use `|| true` to ignore errors)
+        desktop-file-edit --set-key=Icon --set-value='${SNAP}/usr/share/icons/hicolor/scalable/apps/dosbox-x.svg' $SNAPCRAFT_PART_INSTALL/usr/share/applications/com.dosbox_x.DOSBox-X.desktop || true
+
         snapcraftctl set-version $(head -n 1 CHANGELOG | awk -F ' ' '{print $1}' | tr -d '\r')
     build-packages:
+      - desktop-file-utils
       - g++
       - make
       - libpng-dev
