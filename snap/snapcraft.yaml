@@ -14,6 +14,13 @@ architectures:
 confinement: strict
 grade: stable
 
+assumes:
+  - snapd2.36 # layouts
+
+layout:
+  /usr/share/sounds:
+    bind: $SNAP/usr/share/sounds
+
 apps:
   dosbox-x:
     command: desktop-launch $SNAP/dosbox-x
@@ -51,6 +58,7 @@ parts:
       - libsdl-net1.2-dev
       - libsdl-sound1.2-dev
       - libasound2-dev
+      - libfluidsynth-dev
       - libxkbfile-dev
       - nasm
       - libpulse-dev
@@ -70,6 +78,7 @@ parts:
       - libva2
       - libasound2
       - libcrystalhd3
+      - libfluidsynth1
       - libfontconfig1
       - libpng16-16
       - libgme0
