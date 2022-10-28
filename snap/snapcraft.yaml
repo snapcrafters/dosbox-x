@@ -70,61 +70,61 @@ parts:
         snapcraftctl set-version $(head -n 1 CHANGELOG | awk -F ' ' '{print $1}' | tr -d '\r')
     build-packages:
       - g++
-      - make
-      - libpng-dev
       - libasound2-dev
+      - libncurses5-dev
+      - libpng-dev
       - libsdl2-dev
       - libsdl2-net-dev
       - libfluidsynth-dev
       - libxkbfile-dev
+      - make
       - nasm
-      - libpulse-dev
-      - libncurses5-dev
     stage-packages:
-      - libnuma1
-      - libogg0
-      - libopus0
-      - libsoxr0
-      - libtwolame0
-      - libxcb-dri2-0
-      - libxcb-dri3-0
-      - libxcb-glx0
-      - libxcb-present0
-      - libzvbi0
-      - libglu1-mesa
-      - libva2
+      - fluid-soundfont-gm
       - libasound2
+      - libbluray2
       - libcrystalhd3
       - libfluidsynth1
       - libfontconfig1
-      - libpng16-16
+      - libglu1-mesa
       - libgme0
       - libgsm1
+      - libjpeg62
+      - libmodplug1
       - libmp3lame0
-      - libpulse0
+      - libnuma1
+      - libogg0
+      - libopus0
       - liborc-0.4-0
+      - libpng16-16
+      - libpulse0
       - librtmp1
       - libsdl2-2.0-0
       - libsdl2-net-2.0-0
       - libshine3
       - libsnappy1v5
+      - libsoxr0
       - libspeex1
       - libssh-gcrypt-4
       - libtheora0
+      - libtwolame0
+      - libva2
       - libvorbis0a
       - libvorbisenc2
-      - libwavpack1
-      - libxkbfile1
-      - libxml2
-      - libxvidcore4
-      - libbluray2
-      - libmodplug1
-      - libjpeg62
-#      - libschroedinger-1.0-0
       - libvpx5
+      - libwavpack1
       - libwebp6
       - libx264-152
       - libx265-146
+      - libxcb-dri2-0
+      - libxcb-dri3-0
+      - libxcb-glx0
+      - libxcb-present0
+      - libxkbfile1
+      - libxml2
+      - libxvidcore4
+      - libzvbi0
+      - yad # for dosbox to open dialogs
 
   desktop-glib-only:
     plugin: make
@@ -182,8 +182,8 @@ parts:
       - libspeex-dev
       - libtheora-dev
       - libtwolame-dev
-      - libva-dev
       - libv4l-dev
+      - libva-dev
       - libvdpau-dev
       - libvorbis-dev
       - libvpx-dev
@@ -225,9 +225,9 @@ parts:
       - libvorbis0a
       - libvorbisenc2
       - libvpx5
+      - libx11-6
       - libx264-152
       - libx265-146
-      - libx11-6
       - libxau6
       - libxcb-shape0
       - libxcb-shm0
