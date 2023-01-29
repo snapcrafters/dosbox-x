@@ -67,8 +67,6 @@ parts:
 
         # never fail on the next line (use `|| true` to ignore errors)
         desktop-file-edit --set-key=Icon --set-value='${SNAP}/usr/share/icons/hicolor/scalable/apps/dosbox-x.svg' $SNAPCRAFT_PART_INSTALL/usr/share/applications/com.dosbox_x.DOSBox-X.desktop || true
-
-        snapcraftctl set-version $(head -n 1 CHANGELOG | awk -F ' ' '{print $1}' | tr -d '\r')
     build-packages:
       - desktop-file-utils
       - g++
