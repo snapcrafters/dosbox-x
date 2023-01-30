@@ -1,6 +1,6 @@
 name: dosbox-x
 adopt-info: dosbox-x
-base: core18
+base: core22
 
 architectures:
   - build-on: i386
@@ -23,8 +23,8 @@ apps:
     command: bin/desktop-launch $SNAP/usr/bin/dosbox-x
     desktop: usr/share/applications/com.dosbox_x.DOSBox-X.desktop
     common-id: com.dosbox_x.DOSBox-X
-    environment: 
-      LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
+    environment:
+      LD_LIBRARY_PATH: "$SNAP/usr/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
       DISABLE_WAYLAND: 1
     plugs: 
     - audio-playback
@@ -46,10 +46,12 @@ parts:
     parse-info: [usr/share/metainfo/com.dosbox_x.DOSBox-X.metainfo.xml]
     source-type: git
     source: https://github.com/joncampbell123/dosbox-x.git
-    configflags:
+    autotools-configure-parameters:
       - --prefix=/usr
       - --enable-debug=heavy
       - --enable-sdl2
+    build-environment:
+      - LD_LIBRARY_PATH: ${CRAFT_STAGE}/usr/lib
     override-build: |
         # There is no pattern in the release tags for DosBox-X
         # This should resolve to a version or datestamp or both.
@@ -83,8 +85,7 @@ parts:
       - fluid-soundfont-gm
       - libasound2
       - libbluray2
-      - libcrystalhd3
-      - libfluidsynth1
+      - libfluidsynth3
       - libfontconfig1
       - libglu1-mesa
       - libgme0
@@ -111,11 +112,11 @@ parts:
       - libva2
       - libvorbis0a
       - libvorbisenc2
-      - libvpx5
+      - libvpx7
       - libwavpack1
-      - libwebp6
-      - libx264-152
-      - libx265-146
+      - libwebp7
+      - libx264-163
+      - libx265-199
       - libxcb-dri2-0
       - libxcb-dri3-0
       - libxcb-glx0
@@ -149,7 +150,7 @@ parts:
     source: https://github.com/mstorsjo/fdk-aac/archive/v2.0.2.tar.gz
     build-packages:
       - g++
-    configflags:
+    autotools-configure-parameters:
       - --prefix=/usr
       - --disable-static
     prime:
@@ -198,10 +199,6 @@ parts:
       - opencl-headers
       - pkg-config
       - yasm
-      - on amd64:
-        - libcrystalhd-dev
-      - on i386:
-        - libcrystalhd-dev
     stage-packages:
       - libass9
       - libdrm2
@@ -224,10 +221,10 @@ parts:
       - libvdpau-va-gl1
       - libvorbis0a
       - libvorbisenc2
-      - libvpx5
+      - libvpx7
       - libx11-6
-      - libx264-152
-      - libx265-146
+      - libx264-163
+      - libx265-199
       - libxau6
       - libxcb-shape0
       - libxcb-shm0
@@ -242,11 +239,9 @@ parts:
       - ocl-icd-libopencl1
       - on amd64:
         - i965-va-driver
-        - libcrystalhd3
       - on i386:
         - i965-va-driver
-        - libcrystalhd3
-    configflags:
+    autotools-configure-parameters:
       - --prefix=/usr
       - --disable-debug
       - --disable-doc
