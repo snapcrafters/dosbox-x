@@ -34,7 +34,9 @@ apps:
     - network
     - network-bind
     - opengl
+    - raw-usb
     - removable-media
+    - serial-port
     - unity7
     - wayland
     - x11
