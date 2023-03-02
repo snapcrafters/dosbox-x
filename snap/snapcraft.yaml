@@ -18,6 +18,8 @@ layout:
   /usr/share/sounds:
     bind: $SNAP/usr/share/sounds
 
+icon: snap/gui/dosbox-x.svg
+
 apps:
   dosbox-x:
     command: bin/desktop-launch $SNAP/usr/bin/dosbox-x
